@@ -1526,7 +1526,7 @@ function redzLib:MakeWindow(Configs)
       function Colorpicker:Set(Value)
         Colorpicker.Value = Value
         ColorpickerBox.BackgroundColor3 = Colorpicker.Value
-        ColorpickerConfig.Callback(Colorpicker.Value)
+        Configs.Callback(Colorpicker.Value)
       end
 
       Colorpicker:Set(Colorpicker.Value)

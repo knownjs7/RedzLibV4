@@ -1365,7 +1365,7 @@ function redzLib:MakeWindow(Configs)
       local MainContainer = Create("Frame", Frame, {Size = UDim2.new(1, 0, 0, 25),BackgroundTransparency = 1})
       local Text = insertTheme(Create("TextLabel", MainContainer, {
         Font = Theme["Font"][2],
-        Text = SName,
+        Text = CName,
         TextSize = 13,
         Size = UDim2.new(0.55, -15, 1, 0),
         Position = UDim2.new(0, 15, 0, 0),

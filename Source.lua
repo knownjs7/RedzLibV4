@@ -1351,155 +1351,314 @@ function redzLib:MakeWindow(Configs)
       return Slider
     end
     function Tab:AddColorpicker(Configs)
-      local name = Configs.Name or "Color Picker"
-      local Default = Configs.Default or Color3.fromRGB(0, 0, 200)
-      local Callback = Configs.Callback or function() end
-      local ColorH, ColorS, ColorV = 1, 1, 1
-      Callback(Default)
-      
-      local Frame = Button(Container, {Size = UDim2.new(1, 0, 0, 25), AutomaticSize = "Y"})
-      local TextButton = Create("Frame", Frame, {
-        Size = UDim2.new(1, 0, 0, 25),
-        BackgroundColor3 = Configs_HUB.Cor_Options,
-      })Stroke(TextButton)Corner(TextButton)
-      
-      local click = Create("TextButton", TextButton, {
-        Size = UDim2.new(1, 0, 0, 25),
-        BackgroundTransparency = 1,
-        AutoButtonColor = false,
-        Text = ""
-      })
-      
-      local TextLabel = Create("TextLabel", TextButton, {
-        Size = UDim2.new(1, -10, 0, 25),
-        Position = UDim2.new(0, 35, 0, 0),
-        TextSize = 12,
-        TextColor3 = Configs_HUB.Cor_Text,
-        TextXAlignment = "Left",
-        Text = name,
-        Font = Configs_HUB.Text_Font,
-        BackgroundTransparency = 1
-      })
-      
-      local picker = Create("Frame", TextButton, {
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(0, 5, 0, 2.5),
-        BackgroundColor3 = Default
-      })Corner(picker)Stroke(picker)
-      
-      local UI_Grade = Create("ImageButton", TextButton, {
-        Size = UDim2.new(1, -100, 1, tonumber(-TextButton.Size.Y.Offset - 20)),
-        Position = UDim2.new(0, 10, 0, tonumber(TextButton.Size.Y.Offset + 12.5)),
-        Visible = false,
-        Image = "rbxassetid://4155801252"
-      })Corner(UI_Grade)Stroke(UI_Grade)local SavePos = Create("Frame", UI_Grade, {Visible = false})
-      
-      local grade = Create("TextButton", TextButton, {
-        Size = UDim2.new(0, 30, 1, tonumber(-TextButton.Size.Y.Offset - 20)),
-        Position = UDim2.new(1, -10, 0, tonumber(TextButton.Size.Y.Offset + 12.5)),
-        AnchorPoint = Vector2.new(1, 0),
-        Visible = false,
-        Text = ""
-      })Corner(grade)Stroke(grade)Create("UIGradient", grade, {
-        Rotation = 90,
-        Color = ColorSequence.new({
-          ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)),
-          ColorSequenceKeypoint.new(0.20, Color3.fromRGB(234, 255, 0)),
-          ColorSequenceKeypoint.new(0.40, Color3.fromRGB(21, 255, 0)),
-          ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 255, 255)),
-          ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)),
-          ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 251)),
-          ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 4))
-        })
-      })local SavePos2 = Create("Frame", grade, {Visible = false, Size = UDim2.new(1, 0, 0, 0)})
-      
-      local A_1 = Create("Frame", TextButton, {
-        Size = UDim2.new(1, 0, 0, 0),
-        Position = UDim2.new(0, 0, 0, 30),
-        Visible = false
-      })Stroke(A_1)
-      
-      local Select1 = Create("Frame", grade, {
-        Size = UDim2.new(1, 0, 0, 10),
-        Position = UDim2.new(0, 0, 0, select(3, Color3.toHSV(Default))),
-        BackgroundTransparency = 1,
-        Active = true,
-        Draggable = true
-      })Corner(Select1, {CornerRadius = UDim.new(2, 0)})Stroke(Select1, {Color = Color3.fromRGB(255, 255, 255)})
-      
-      local Select2 = Create("Frame", UI_Grade, {
-        Size = UDim2.new(0, 15, 0, 15),
-        Position = UDim2.new(0, select(2, Color3.toHSV(Default)), 0, select(1, Color3.toHSV(Default))),
-        BackgroundTransparency = 1,
-        Active = true,
-        Draggable = true
-      })Corner(Select2, {CornerRadius = UDim.new(2, 0)})Stroke(Select2, {Color = Color3.fromRGB(255, 255, 255)})
-    
-      UI_Grade.MouseButton1Click:Connect(function()
-        local mouse = UserInputService:GetMouseLocation()
-        local savepos = SavePos.AbsolutePosition
-        CreateTween(Select2, "Position", UDim2.new(0, mouse.X - savepos.X, 0, tonumber(mouse.Y - savepos.Y) - 35), 0.3, false)
-      end)
-      
-      grade.MouseButton1Click:Connect(function()
-        local mouse = UserInputService:GetMouseLocation().Y - 35
-        local savepos = SavePos2.AbsolutePosition.Y
-        CreateTween(Select1, "Position", UDim2.new(0, 0, 0, mouse - savepos), 0.3, false)
-      end)
-      
-      local function callback()Callback(Color3.fromHSV(ColorH, ColorS, ColorV))end
-      local function updcolorpicker()
-        ColorH = tonumber(Select1.Position.Y.Offset) / 80
-        ColorS = tonumber(215 - Select2.Position.X.Offset) / 215
-        ColorV = tonumber(75 - Select2.Position.Y.Offset) / 75
-        UI_Grade.ImageColor3 = Color3.fromHSV(ColorH, 1, 1)
-        picker.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
-        callback()
+      local CName = Configs[1] or Configs.Name or "Colorpicker"
+      local DefaultColor = Configs[2] or Configs.Default or Color3.fromRGB(0, 120, 50)
+      local Callback = Configs[3] or Configs.Callback or function()end
+      local Save = Configs[4] or Configs.Flag or false
+      if Save and typeof(Save) == "string" and FindTable(Flags, Save) then
+        DefaultColor = Color3.fromRGB(unpack(Flags[Save]))
       end
       
-      updcolorpicker()
+      local ColorH, ColorS, ColorV = Color3.toHSV(DefaultColor)
       
-      Select1.Changed:Connect(function(prop)
-        if prop == "Position" then
-          Select1.Position = UDim2.new(0, 0, 0, math.clamp(Select1.Position.Y.Offset, 0, 80))
-          updcolorpicker()
+      local Frame = Button(Container, {Size = UDim2.new(1, 0, 0, 25)})
+      local MainContainer = Create("Frame", Frame, {Size = UDim2.new(1, 0, 0, 25),BackgroundTransparency = 1})
+      local Text = insertTheme(Create("TextLabel", MainContainer, {
+        Font = Theme["Font"][2],
+        Text = SName,
+        TextSize = 13,
+        Size = UDim2.new(0.55, -15, 1, 0),
+        Position = UDim2.new(0, 15, 0, 0),
+        BackgroundTransparency = 1,
+        TextColor3 = Theme["Color Text"],
+        TextXAlignment = "Left",
+        TextTruncate = "AtEnd"
+      }), "Text")
+      
+      local ColorSelected = Create("Frame", MainContainer, {
+        Size = UDim2.new(0, 60, 1, -5),
+        AnchorPoint = Vector2.new(1, 0.5),
+        Position = UDim2.new(1, -10, 0.5, 0)
+      }, {
+        Corner()
+      })
+      
+      local function SaveColorpicker()
+        if Save and typeof(Save) == "string" then
+          local str = string.split(tostring(ColorSelected.BackgroundColor3))
+          local Color = {
+            tonumber(str[1]) * 255,
+            tonumber(str[2]) * 255,
+            tonumber(str[3]) * 255
+          }
+          
+          SaveFile(Save, Color)
         end
-      end)
+      end
       
-      Select2.Changed:Connect(function(prop)
-        if prop == "Position" then
-          Select2.Position = UDim2.new(0, math.clamp(Select2.Position.X.Offset, 0, 222), 0, math.clamp(Select2.Position.Y.Offset, 0, 75))
-          updcolorpicker()
-        end
-      end)
+      local ColorpickerC = Create("Frame", Frame, {
+        Size = UDim2.new(1, 0, 1, -25),
+        Position = UDim2.new(0, 0, 0, 25),
+        BackgroundTransparency = 1,
+        ClipsDescendants = true
+      })
       
-      TextButton.Changed:Connect(function(prop)
-        if prop == "Size" then
-          if TextButton.Size.Y.Offset >= 60 then
-            picker.Position = UDim2.new(0, 5, 0, 5)
-            UI_Grade.Visible = true
-            A_1.Visible = true
-            grade.Visible = true
-          else
-            picker.Position = UDim2.new(0, 5, 0, 2.5)
-            UI_Grade.Visible = false
-            A_1.Visible = false
-            grade.Visible = false
+      local Select1 = Create("ImageButton", ColorpickerC, {
+        Size = UDim2.new(0, 180, 1, -20),
+        Position = UDim2.new(0, 10, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        AutoButtonColor = false,
+        Image = "rbxassetid://4155801252"
+      }, {
+        Corner()
+      })
+      
+      local Select2 = Create("ImageButton", ColorpickerC, {
+        Size = UDim2.new(1, -210, 0, 20),
+        Position = UDim2.new(1, -10, 0, 10),
+        AnchorPoint = Vector2.new(1, 0),
+        AutoButtonColor = false
+      }, {
+        Corner(),
+        Create("UIGradient", {
+          Rotation = 0,
+          Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)),
+            ColorSequenceKeypoint.new(0.20, Color3.fromRGB(234, 255, 0)),
+            ColorSequenceKeypoint.new(0.40, Color3.fromRGB(21, 255, 0)),
+            ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 255, 255)),
+            ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)),
+            ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 251)),
+            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 4))
+          })
+        })
+      })
+      
+      local BaseMousePos1, BaseMousePos2 = Create("Frame", Select1, {Visible = false}), Create("Frame", Select2, {Visible = false})
+      
+      local Label1, Label2, Label3
+      local S1 = insertTheme(Create("TextBox", ColorpickerC, {
+        Size = UDim2.new(0, 40, 0, 20),
+        Position = UDim2.new(1, -10, 0, 35),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundColor3 = Theme["Color Hub 2"],
+        Font = Theme["Font"][3],
+        TextColor3 = Theme["Color Text"],
+        TextScaled = true,
+        ClearTextOnFocus = false
+      }, {
+        Corner(),
+        Create("TextLabel", {
+          Size = UDim2.new(0, 20, 0, 20),
+          AnchorPoint = Vector2.new(1, 0),
+          TextColor3 = Color3.fromRGB(255, 0, 0),
+          TextScaled = true,
+          BackgroundTransparency = 1,
+          Text = "R",
+          Font = Theme["Font"][3]
+        })
+      }), "Text")
+      
+      local S2 = insertTheme(Create("TextBox", ColorpickerC, {
+        Size = UDim2.new(0, 40, 0, 20),
+        Position = UDim2.new(1, -10, 0, 60),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundColor3 = Theme["Color Hub 2"],
+        Font = Theme["Font"][3],
+        TextColor3 = Theme["Color Text"],
+        TextScaled = true,
+        ClearTextOnFocus = false
+      }, {
+        Corner(),
+        Create("TextLabel", {
+          Size = UDim2.new(0, 20, 0, 20),
+          AnchorPoint = Vector2.new(1, 0),
+          TextColor3 = Color3.fromRGB(0, 255, 0),
+          TextScaled = true,
+          BackgroundTransparency = 1,
+          Text = "G",
+          Font = Theme["Font"][3]
+        })
+      }), "Text")
+    
+      local S3 = insertTheme(Create("TextBox", ColorpickerC, {
+        Size = UDim2.new(0, 40, 0, 20),
+        Position = UDim2.new(1, -10, 0, 85),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundColor3 = Theme["Color Hub 2"],
+        Font = Theme["Font"][3],
+        TextColor3 = Theme["Color Text"],
+        TextScaled = true,
+        ClearTextOnFocus = false
+      }, {
+        Corner(),
+        Create("TextLabel", {
+          Size = UDim2.new(0, 20, 0, 20),
+          AnchorPoint = Vector2.new(1, 0),
+          TextColor3 = Color3.fromRGB(0, 0, 255),
+          TextScaled = true,
+          BackgroundTransparency = 1,
+          Text = "B",
+          Font = Theme["Font"][3]
+        })
+      }), "Text")
+      
+      local Mouse1 = Create("Frame", Select1, {
+        Size = UDim2.new(0, 15, 0, 15),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(1 - ColorS, 0, 1 - ColorV, 0),
+        BackgroundTransparency = 1
+      }, {
+        Corner({}, true),
+        Create("UIStroke", {
+          Thickness = 1.2,
+          Color = Color3.fromRGB(255, 255, 255)
+        })
+      })
+      
+      local Mouse2 = Create("Frame", Select2, {
+        Size = UDim2.new(0, 8, 1, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(ColorH, 0, 0.5, 0),
+        BackgroundTransparency = 1
+      }, {
+        Corner({}, true),
+        Create("UIStroke", {
+          Thickness = 1.2,
+          Color = Color3.fromRGB(255, 255, 255)
+        })
+      })
+      
+      local function ConfigureColor()
+        ColorH = Mouse2.Position.X.Scale
+        ColorS = 1 - Mouse1.Position.X.Scale
+        ColorV = 1 - Mouse1.Position.Y.Scale
+        
+        Select1.ImageColor3 = Color3.fromHSV(ColorH, 1, 1)
+        ColorSelected.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
+        task.spawn(Callback, Color3.fromHSV(ColorH, ColorS, ColorV))
+      end;ConfigureColor()
+      
+      local Mouse1Input, Mouse2Input, Minimized, WaitClick
+      Select1.InputBegan:Connect(function(Input)
+        if Minimized and not WaitClick and not Mouse2Input then
+          if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Container.ScrollingEnabled, Mouse1Input = false, true
+            while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do task.wait()
+              local MousePos = Player:GetMouse()
+              local APosX = MousePos.X - BaseMousePos1.AbsolutePosition.X
+              local APosY = MousePos.Y - BaseMousePos1.AbsolutePosition.Y
+              local BPosX = APosX / Select1.AbsoluteSize.X
+              local BPosY = APosY / Select1.AbsoluteSize.Y
+              
+              Mouse1.Position = UDim2.new(math.clamp(BPosX, 0, 1), 0, math.clamp(BPosY, 0, 1), 0)
+              ConfigureColor()
+            end
+            Container.ScrollingEnabled, Mouse1Input = true, false
+            SaveColorpicker()
           end
         end
       end)
       
-      local onoff = false
-      click.MouseButton1Click:Connect(function()
-        onoff = not onoff
-        if onoff == true then
-          local tween = TweenService:Create(TextButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear),
-          {Size = UDim2.new(1, 0, 0, 140)})tween:play()tween.Completed:Wait()
-        else
-          local tween = TweenService:Create(TextButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear),
-          {Size = UDim2.new(1, 0, 0, 25)})tween:play()tween.Completed:Wait()
+      Select2.InputBegan:Connect(function(Input)
+        if Minimized and not WaitClick and not Mouse1Input then
+          if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Container.ScrollingEnabled, Mouse2Input = false, true
+            while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do task.wait()
+              local MousePos = Player:GetMouse()
+              local APosX = MousePos.X - BaseMousePos2.AbsolutePosition.X
+              local BPosX = APosX / Select2.AbsoluteSize.X
+              
+              Mouse2.Position = UDim2.new(math.clamp(BPosX, 0, 1), 0, 0.5, 0)
+              ConfigureColor()
+            end
+            Container.ScrollingEnabled, Mouse2Input = true, false
+            SaveColorpicker()
+          end
         end
       end)
+      
+      Frame.Activated:Connect(function()
+        if not WaitClick then
+          WaitClick = true
+          if not Minimized then
+            CreateTween({Frame, "Size", UDim2.new(1, 0, 0, 135), 0.3, true})
+          else
+            CreateTween({Frame, "Size", UDim2.new(1, 0, 0, 25), 0.3, true})
+          end
+          WaitClick = false
+          Minimized = not Minimized
+        end
+      end)
+      
+      local function SetColor(Color)
+        local H, S, V = Color3.toHSV(Color)
+        
+        ColorH = H
+        ColorS = 1 - S
+        ColorV = 1 - V
+        
+        CreateTween({Mouse1, "Position", UDim2.new(ColorS, 0, ColorV, 0), 0.3})
+        CreateTween({Mouse2, "Position", UDim2.new(ColorH, 0, 0.5, 0), 0.3})
+        CreateTween({ColorSelected, "BackgroundColor3", Color, 0.3})
+        CreateTween({Select1, "ImageColor3", Color3.fromHSV(ColorH, 1, 1), 0.3})
+        task.spawn(Callback, Color)
+      end
+      
+      task.spawn(function()
+        local Saved1, Saved2, Saved3
+        local function UPD()
+          SetColor(Color3.fromRGB(Saved1, Saved2, Saved3))
+        end
+        
+        local function UPD1()if tonumber(S1.Text) then local number = math.clamp(tonumber(S1.Text), 0, 255)
+        S1.Text = tostring(number)Saved1 = S1.Text else S1.Text = Saved1 end UPD()end
+        local function UPD2()if tonumber(S2.Text) then local number = math.clamp(tonumber(S2.Text), 0, 255)
+        S2.Text = tostring(number)Saved2 = S2.Text else S2.Text = Saved2 end UPD()end
+        local function UPD3()if tonumber(S3.Text) then local number = math.clamp(tonumber(S3.Text), 0, 255)
+        S3.Text = tostring(number)Saved3 = S3.Text else S3.Text = Saved3 end UPD()end
+        
+        local function SetToColor()
+          local str = tostring((ColorSelected.BackgroundColor3)):gsub(" ", "")
+          local color = str:split(",")
+          
+          color[1] = tostring(math.ceil(tonumber(color[1] * 255)))
+          color[2] = tostring(math.ceil(tonumber(color[2] * 255)))
+          color[3] = tostring(math.ceil(tonumber(color[3] * 255)))
+          
+          S1.Text = color[1]
+          S2.Text = color[2]
+          S3.Text = color[3]
+        end
+        
+        S1.FocusLost:Connect(UPD1)
+        S2.FocusLost:Connect(UPD2)
+        S3.FocusLost:Connect(UPD3)
+        
+        local str = tostring((DefaultColor)):gsub(" ", "")
+        local color = str:split(",")
+        
+        color[1] = tostring(math.ceil(tonumber(color[1] * 255)))
+        color[2] = tostring(math.ceil(tonumber(color[2] * 255)))
+        color[3] = tostring(math.ceil(tonumber(color[3] * 255)))
+        
+        S1.Text = color[1]
+        S2.Text = color[2]
+        S3.Text = color[3]
+        
+        ColorSelected:GetPropertyChangedSignal("BackgroundColor3"):Connect(SetToColor)
+      end)
+      
+      local Colorpicker = {}
+      
+      function Colorpicker:Set(val1)
+        if typeof(val1) == "function" then Callback = val1
+        elseif typeof(val1) == "Color3" then SetColor(val1)
+        elseif typreof(val1) == "string" then TextLabel1.Text = val1 end
+      end
+      function Colorpicker:Destroy()Frame:Destroy()end
+      function Colorpicker:Visible(Bool)Frame.Visible = Bool end
+      return Colorpicker
     end
     function Tab:AddDropdown(Configs)
       local DName = Configs[1] or Configs.Name or "Dropdown"

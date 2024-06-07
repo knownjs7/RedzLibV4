@@ -1529,7 +1529,7 @@ function redzLib:MakeWindow(Configs)
         })
       })
       
-    local function ConfigureColor()
+      local function ConfigureColor()
         local ColorH = Mouse2.Position.X.Scale
         local ColorS = 1 - Mouse1.Position.X.Scale
         local ColorV = 1 - Mouse1.Position.Y.Scale
@@ -1541,9 +1541,18 @@ function redzLib:MakeWindow(Configs)
         -- Aplicando as cores
         Select1.ImageColor3 = RGBColor1
         ColorSelected.BackgroundColor3 = RGBColorSelected
-
-        -- Chamando a função de callback com a cor em RGB
-        task.spawn(Callback, RGBColorSelected)
+        
+        -- Converting Color3 to 0-255 RGB values
+        local function Color3To255(color)
+            return {
+                R = math.floor(color.R * 255),
+                G = math.floor(color.G * 255),
+                B = math.floor(color.B * 255)
+            }
+        end
+        local RGBColorSelected255 = Color3To255(RGBColorSelected)
+        
+        task.spawn(Callback, RGBColorSelected255)
     end
     ConfigureColor()
       

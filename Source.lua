@@ -1541,18 +1541,16 @@ function redzLib:MakeWindow(Configs)
         -- Aplicando as cores
         Select1.ImageColor3 = RGBColor1
         ColorSelected.BackgroundColor3 = RGBColorSelected
+    
+        -- Convertendo de 0-1 para 0-255 e criando Color3.fromRGB
+        local r = math.floor(RGBColorSelected.R * 255)
+        local g = math.floor(RGBColorSelected.G * 255)
+        local b = math.floor(RGBColorSelected.B * 255)
         
-        -- Converting Color3 to 0-255 RGB values
-        local function Color3To255(color)
-            return {
-                R = math.floor(color.R * 255),
-                G = math.floor(color.G * 255),
-                B = math.floor(color.B * 255)
-            }
-        end
-        local RGBColorSelected255 = Color3To255(RGBColorSelected)
+        local RGBColor = Color3.fromRGB(r, g, b)
         
-        task.spawn(Callback, RGBColorSelected255)
+        -- Chamando a função de callback com a cor em RGB
+        task.spawn(Callback, RGBColor)
     end
     ConfigureColor()
       

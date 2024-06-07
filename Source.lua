@@ -1530,9 +1530,9 @@ function redzLib:MakeWindow(Configs)
       })
       
       local function ConfigureColor()
-        ColorH = Mouse2.Position.X.Scale
-        ColorS = 1 - Mouse1.Position.X.Scale
-        ColorV = 1 - Mouse1.Position.Y.Scale
+        ColorH = tonumber(Mouse2.Position.Y.Offset) / 80
+        ColorS = tonumber(215 - Mouse1.Position.X.Offset) / 215
+        ColorV = tonumber(75 - Mouse1.Position.Y.Offset) / 75
         
         Select1.ImageColor3 = Color3.fromHSV(ColorH, 1, 1)
         ColorSelected.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)

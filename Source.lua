@@ -1529,15 +1529,23 @@ function redzLib:MakeWindow(Configs)
         })
       })
       
-      local function ConfigureColor()
-        ColorH = Mouse2.Position.X.Scale
-        ColorS = 1 - Mouse1.Position.X.Scale
-        ColorV = 1 - Mouse1.Position.Y.Scale
+    local function ConfigureColor()
+        local ColorH = Mouse2.Position.X.Scale
+        local ColorS = 1 - Mouse1.Position.X.Scale
+        local ColorV = 1 - Mouse1.Position.Y.Scale
         
-        Select1.ImageColor3 = Color3.fromHSV(ColorH, 1, 1)
-        ColorSelected.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
-        task.spawn(Callback, Color3.fromHSV(ColorH, ColorS, ColorV))
-      end;ConfigureColor()
+        -- Convertendo HSV para RGB
+        local RGBColor1 = Color3.fromHSV(ColorH, 1, 1)
+        local RGBColorSelected = Color3.fromHSV(ColorH, ColorS, ColorV)
+        
+        -- Aplicando as cores
+        Select1.ImageColor3 = RGBColor1
+        ColorSelected.BackgroundColor3 = RGBColorSelected
+
+        -- Chamando a função de callback com a cor em RGB
+        task.spawn(Callback, RGBColorSelected)
+    end
+    ConfigureColor()
       
       local Mouse1Input, Mouse2Input, Minimized, WaitClick
       Select1.InputBegan:Connect(function(Input)

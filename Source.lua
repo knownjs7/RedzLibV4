@@ -1543,16 +1543,15 @@ function redzLib:MakeWindow(Configs)
         ColorSelected.BackgroundColor3 = RGBColorSelected
     
         -- Convertendo de 0-1 para 0-255 e criando Color3.fromRGB
-        local r = math.floor(RGBColorSelected.R * 255)
-        local g = math.floor(RGBColorSelected.G * 255)
-        local b = math.floor(RGBColorSelected.B * 255)
+        local red = math.floor(RGBColorSelected.R * 255)
+        local green = math.floor(RGBColorSelected.G * 255)
+        local blue = math.floor(RGBColorSelected.B * 255)
         
-        local RGBColor = Color3.fromRGB(r, g, b)
+        local RGBColor = Color3.fromRGB(red, green, blue)
         
         -- Chamando a função de callback com a cor em RGB
         task.spawn(Callback, RGBColor)
-    end
-    ConfigureColor()
+      end;ConfigureColor()
       
       local Mouse1Input, Mouse2Input, Minimized, WaitClick
       Select1.InputBegan:Connect(function(Input)

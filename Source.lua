@@ -1352,7 +1352,7 @@ function redzLib:MakeWindow(Configs)
     end
     function Tab:AddColorpicker(Configs)
       local CName = Configs[1] or Configs.Name or "Colorpicker"
-      local DefaultColor = Configs[2] or Configs.Default or Color3.fromRGB(0, 120, 50)
+      local DefaultColor = Configs[2] or Configs.Default or Color3.fromRGB(255, 255, 255)
       local Callback = Configs[3] or Configs.Callback or function()end
       local Save = Configs[4] or Configs.Flag or false
       if Save and typeof(Save) == "string" and FindTable(Flags, Save) then
@@ -1530,9 +1530,9 @@ function redzLib:MakeWindow(Configs)
       })
       
       local function ConfigureColor()
-        local ColorH = Mouse2.Position.X.Scale
-        local ColorS = 1 - Mouse1.Position.X.Scale
-        local ColorV = 1 - Mouse1.Position.Y.Scale
+				ColorH = 1 - (math.clamp(Mouse2.AbsolutePosition.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
+				ColorS = (math.clamp(Mouse1.AbsolutePosition.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
+				ColorV = 1 - (math.clamp(Mouse1.AbsolutePosition.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
         
         -- Convertendo HSV para RGB
         local RGBColor1 = Color3.fromHSV(ColorH, 1, 1)

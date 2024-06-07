@@ -1350,14 +1350,15 @@ function redzLib:MakeWindow(Configs)
       function Slider:Destroy()Frame:Destroy()end
       return Slider
     end
-    function Tab:AddColorPicker(parent, Configs)
+    function Tab:AddColorpicker(Configs)
       local name = Configs.Name or "Color Picker"
       local Default = Configs.Default or Color3.fromRGB(0, 0, 200)
       local Callback = Configs.Callback or function() end
       local ColorH, ColorS, ColorV = 1, 1, 1
       Callback(Default)
       
-      local TextButton = Create("Frame", parent, {
+      local Frame = Button(Container, {Size = UDim2.new(1, 0, 0, 25), AutomaticSize = "Y"})
+      local TextButton = Create("Frame", Frame, {
         Size = UDim2.new(1, 0, 0, 25),
         BackgroundColor3 = Configs_HUB.Cor_Options,
       })Stroke(TextButton)Corner(TextButton)
